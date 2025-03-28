@@ -15,13 +15,13 @@ app.post("/api/chatbot", async (req, res) => {
         const { question } = req.body;
         if (!question) return res.status(400).json({ error: "Question is required" });
 
-        const { data, error } = await supabase.from("description").select("*");
+        const { data, error } = await supabase.from("context").select("*");
         if (error) {
             console.error("Supabase error:", error.message);
             return res.status(500).json({ error: "Database query failed" });
         }
 
-        const context = data.map((item) => `${item.short_desc}, ${item.description}`).join("\n");
+        const context = data.map((item) => `${item.context}`);
 
         const response = await axios.post(
             `${process.env.AI_API_URL}key=${process.env.AI_API_KEY}`,
